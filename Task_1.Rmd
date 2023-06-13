@@ -1,0 +1,54 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+---
+title: '#Task 1'
+author: "Dr. Suyash Lokras"
+date: "2023-06-08"
+output: html_document
+editor_options: 
+  markdown: 
+    wrap: 72
+```{r}
+# Add tidyverse package
+library(tidyverse)
+
+# Add the raw data from github
+library(readr)
+data <- read.csv("https://raw.githubusercontent.com/AdiPersonalWorks/Random/master/student_scores%20-%20student_scores.csv")
+view(data)
+
+# Create a linear regression model for Scores vs Hours
+Score_Hours <- lm(Scores ~ Hours, data = data)
+print(Score_Hours)
+
+#To make the graph more aesthetically good ggplot package will be used
+
+LM_Score_Hours <- ggplot(data, aes(Hours, Scores) )+
+  geom_point(size = 2.5, colour = "Dark blue")+
+  geom_smooth(method = lm, se = FALSE, colour = "Magenta")+
+  labs(X = "Hours studied", y = "Scores Achieved", title = "Linear Model")+
+  theme_linedraw()
+  LM_Score_Hours
+
+#Predict score for when student studies for when student studies for 9.25 hr/ day
+Hour_9.25 <- data.frame(Hours = 9.25)
+Score_Predicted <- predict(Score_Hours, newdata = Hour_9.25)
+Score_Predicted
+
+#ggplot with predicted score
+LM_Score_Hours <- ggplot(data, aes(Hours, Scores) )+
+  geom_point(data = Hour_9.25, aes(y = Score_Predicted), size = 2.5, colour = "Dark Blue")+
+  geom_smooth(method = lm, se = FALSE, colour = "Magenta")+
+  labs(X = "Hours studied", y = "Scores Achieved", title = "Linear Model")+
+  theme_linedraw()+
+  scale_x_continuous(breaks = seq(0, 10, by = 0.5),
+                     labels = seq(0, 10, by = 0.5)) +
+  scale_y_continuous(breaks = seq(0, 100, by = 10),
+                     labels = seq(0, 100, by = 10))
+LM_Score_Hours
+
+
+
